@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#031b3d">
+<title>BWRP Karrierecenter</title>
+<style>
+:root{
+  --bg:#03142e;--panel:#071f43;--panel2:#0a2b58;--line:#174f8d;
+  --blue:#0e72ef;--blue2:#17a8ff;--text:#f5f8ff;--muted:#9eb4d0;
+  --green:#4be177;--red:#ff6676;--yellow:#ffd166;--shadow:0 18px 48px rgba(0,0,0,.28)
+}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:
+radial-gradient(circle at 42% 0%,rgba(15,111,255,.27),transparent 32%),
+linear-gradient(135deg,#021126,#05214a 50%,#03162f)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{display:grid;grid-template-columns:245px minmax(0,1fr);min-height:100vh}
+.side{padding:18px 13px;border-right:1px solid rgba(63,132,220,.25);background:rgba(3,20,46,.88);backdrop-filter:blur(12px);position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:11px;padding:5px 7px 20px}.brand img{width:54px;height:54px;border-radius:13px;object-fit:cover;border:1px solid #1989ff}.brand strong{font-size:17px}.brand small{display:block;color:var(--muted);margin-top:2px}
+.nav{display:grid;gap:7px}.nav button{border:1px solid transparent;background:transparent;color:#dce8f8;padding:12px;border-radius:9px;text-align:left}.nav button.active,.nav button:hover{background:linear-gradient(90deg,#0a438e,#0d6bd9);border-color:#1789ff}
+.status-side{margin-top:auto;position:absolute;left:13px;right:13px;bottom:16px;padding:12px;background:#082858;border:1px solid #1b5798;border-radius:11px}.online{color:#8ef4a8}.online:before{content:"";display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;margin-right:7px;box-shadow:0 0 10px var(--green)}
+.main{padding:22px;min-width:0}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}.title h1{margin:0;font-size:34px}.title h1 span{color:#2ca7ff}.title p{margin:5px 0 0;color:var(--muted)}.server-pill{padding:10px 13px;border-radius:9px;background:#092b5b;border:1px solid #1c5795}
+.view{display:none}.view.active{display:block}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}.metric,.panel{background:linear-gradient(180deg,rgba(10,42,88,.97),rgba(5,25,55,.97));border:1px solid rgba(52,124,210,.35);border-radius:13px;box-shadow:var(--shadow)}.metric{padding:15px}.metric small{color:var(--muted)}.metric strong{display:block;font-size:28px;margin-top:5px}
+.panel{padding:17px;margin-bottom:14px}.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:14px}.panel h2{margin:0;font-size:23px}.panel-head p{margin:3px 0 0;color:var(--muted);font-size:13px}
+.btn{border:1px solid #2060aa;color:white;background:#0a2c5c;border-radius:8px;padding:10px 13px;font-weight:700}.btn.primary{background:linear-gradient(#117bff,#0759d3);border-color:#2699ff}.btn.good{background:#17693b;border-color:#279e59}.btn.bad{background:#7b2637;border-color:#c34b61}.btn:disabled{opacity:.45;cursor:not-allowed}
+.module-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.module{padding:14px;border:1px solid #205794;border-radius:10px;background:#082858}.module .ico{font-size:28px}.module h3{margin:8px 0 4px}.module p{margin:0;color:var(--muted);font-size:13px;min-height:38px}.switch-row{display:flex;align-items:center;justify-content:space-between;margin-top:12px}.switch{width:52px;height:28px;border-radius:20px;background:#173c68;border:1px solid #28609c;position:relative}.switch:after{content:"";position:absolute;width:22px;height:22px;left:3px;top:2px;border-radius:50%;background:white;transition:.2s}.switch.on{background:#0b75ea}.switch.on:after{left:25px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.field label{display:block;font-size:12px;color:#c9d9ed;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid #25588e;background:#0a2b59;color:white;border-radius:8px;padding:10px;outline:none}.field textarea{resize:vertical;min-height:110px}.wide{grid-column:1/-1}
+.actions{display:flex;gap:9px;justify-content:flex-end;margin-top:13px;flex-wrap:wrap}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:780px}.table th,.table td{padding:11px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;font-size:13px}.table th{color:#98b8df}.tag{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;background:#17487b}.tag.open{color:#ffe18d}.tag.accepted{color:#9bf5af}.tag.rejected{color:#ff9daa}
+.toast{position:fixed;right:20px;bottom:20px;max-width:360px;padding:12px 14px;border-radius:10px;background:#0b315f;border:1px solid #2e7bc4;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:none}.toast.error{border-color:#d15168;background:#5e2031}
+.loading{opacity:.6;pointer-events:none}
+@media(max-width:1000px){.grid4{grid-template-columns:1fr 1fr}.module-grid{grid-template-columns:1fr}.app{grid-template-columns:200px minmax(0,1fr)}}@media(max-width:720px){.app{display:block}.side{position:relative;height:auto}.status-side{position:static;margin-top:15px}.main{padding:12px}.grid4,.form-grid{grid-template-columns:1fr}.wide{grid-column:auto}.top{align-items:flex-start;flex-direction:column}}
+
+.connection-cover{position:fixed;inset:0;background:rgba(1,10,24,.88);backdrop-filter:blur(10px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.connection-cover.show{display:flex}
+.connection-card{width:min(520px,100%);background:linear-gradient(180deg,#0a2b59,#061a39);border:1px solid #2368b4;border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.48);padding:22px}
+.connection-card h2{margin:0 0 6px;font-size:25px}.connection-card p{color:var(--muted);margin:0 0 18px;line-height:1.45}
+.connection-card .field{margin-bottom:12px}.connection-note{font-size:12px;color:#8fa9c8;margin-top:12px}
+.connection-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:16px}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><img src="/assets/karrierecenter-logo.png" alt=""><div><strong>BWRP Karrierecenter</strong><small>Bot Management</small></div></div>
+    <nav class="nav">
+      <button class="active" data-view="overview">⌂ &nbsp; Übersicht</button>
+      <button data-view="applications">💼 &nbsp; Bewerbungen</button>
+      <button data-view="training">🎓 &nbsp; Ausbildungen</button>
+      <button data-view="advanced">📈 &nbsp; Fortbildungen</button>
+      <button data-view="announcements">📢 &nbsp; Ankündigungen</button>
+      <button data-view="messages">📨 &nbsp; Custom DMs</button>
+      <button data-view="settings">⚙️ &nbsp; Einstellungen</button>
+    </nav>
+    <div class="status-side"><div id="botStatus" class="online">Bot online</div><small id="guildName">Server wird geladen…</small></div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div class="title"><h1>Karrierecenter <span>Panel</span></h1><p>Direkte Steuerung des Discord-Bots.</p></div>
+      <div style="display:flex;gap:8px;align-items:center"><button class="btn" onclick="openConnection()">🔐 Verbindung</button><div class="server-pill" id="serverPill">⏳ Verbindung wird geladen…</div></div>
+    </div>
+
+    <section id="overview" class="view active">
+      <div class="grid4">
+        <div class="metric"><small>📨 Bewerbungen gesamt</small><strong id="statTotal">–</strong></div>
+        <div class="metric"><small>⏳ Offen</small><strong id="statOpen">–</strong></div>
+        <div class="metric"><small>✅ Angenommen</small><strong id="statAccepted">–</strong></div>
+        <div class="metric"><small>❌ Abgelehnt</small><strong id="statRejected">–</strong></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div><h2>⚡ Schnellaktionen</h2><p>Häufig benötigte Funktionen.</p></div></div>
+        <div class="actions" style="justify-content:flex-start">
+          <button class="btn primary" onclick="publishPanel()">💼 Bewerbungs-Panel veröffentlichen</button>
+          <button class="btn" onclick="showView('training')">🎓 Ausbildung ankündigen</button>
+          <button class="btn" onclick="showView('advanced')">📈 Fortbildung ankündigen</button>
+          <button class="btn" onclick="showView('announcements')">📢 Ankündigung schreiben</button>
+          <button class="btn" onclick="showView('messages')">📨 Custom DM senden</button>
+          <button class="btn" onclick="refreshAll()">🔄 Daten aktualisieren</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div><h2>📋 Letzte Bewerbungen</h2><p>Die neuesten Einträge aus der echten Karrierecenter-Datenbank.</p></div></div>
+        <div id="overviewApps"></div>
+      </div>
+    </section>
+
+    <section id="applications" class="view">
+      <div class="panel">
+        <div class="panel-head"><div><h2>💼 Bewerbungsmodule</h2><p>Diese Schalter ändern die echten Bot-Einstellungen.</p></div><button class="btn primary" onclick="saveConfig()">💾 Speichern</button></div>
+        <div class="module-grid">
+          <div class="module"><div class="ico">🗣️</div><h3>Bewerbungsgespräch</h3><p>Persönliches Gespräch nach kurzen Angaben.</p><div class="switch-row"><span>Aktiv</span><button id="swInterview" class="switch" onclick="toggleSwitch(this)"></button></div></div>
+          <div class="module"><div class="ico">📝</div><h3>Schriftliche Bewerbung</h3><p>Eine vollständige Bewerbung als Fließtext.</p><div class="switch-row"><span>Aktiv</span><button id="swWritten" class="switch" onclick="toggleSwitch(this)"></button></div></div>
+          <div class="module"><div class="ico">❓</div><h3>Fragen beantworten</h3><p>Drei individuell konfigurierte Fragen.</p><div class="switch-row"><span>Aktiv</span><button id="swQuestions" class="switch" onclick="toggleSwitch(this)"></button></div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div><h2>📨 Bewerbungen verwalten</h2><p>Annehmen oder ablehnen funktioniert hier direkt und sendet die gleiche DM wie Discord.</p></div><button class="btn" onclick="refreshAll()">🔄 Aktualisieren</button></div>
+        <div id="applicationsTable"></div>
+      </div>
+    </section>
+
+    <section id="training" class="view">
+      <div class="panel">
+        <div class="panel-head"><div><h2>🎓 Ausbildung ankündigen</h2><p>Wird direkt als Components-V2-Nachricht in Discord veröffentlicht.</p></div></div>
+        <div class="form-grid">
+          <div class="field"><label>Titel</label><input id="trainTitle" placeholder="z. B. Streifenbeamter Ausbildung"></div>
+          <div class="field"><label>Datum</label><input id="trainDate" placeholder="12. Oktober 2026"></div>
+          <div class="field"><label>Uhrzeit</label><input id="trainTime" placeholder="18:00 Uhr"></div>
+          <div class="field"><label>Ort</label><input id="trainPlace" placeholder="Schulungszentrum"></div>
+          <div class="field wide"><label>Ausbilder</label><input id="trainLeader" placeholder="Name des Ausbilders"></div>
+          <div class="field wide"><label>Beschreibung</label><textarea id="trainDesc" placeholder="Kurze Beschreibung der Ausbildung…"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" onclick="publishAnnouncement('Ausbildung')">🚀 Ausbildung veröffentlichen</button></div>
+      </div>
+    </section>
+
+    <section id="advanced" class="view">
+      <div class="panel">
+        <div class="panel-head"><div><h2>📈 Fortbildung ankündigen</h2><p>Wird direkt als Components-V2-Nachricht in Discord veröffentlicht.</p></div></div>
+        <div class="form-grid">
+          <div class="field"><label>Titel</label><input id="advTitle" placeholder="z. B. Einsatzlagen & Taktik"></div>
+          <div class="field"><label>Datum</label><input id="advDate" placeholder="15. Oktober 2026"></div>
+          <div class="field"><label>Uhrzeit</label><input id="advTime" placeholder="19:00 Uhr"></div>
+          <div class="field"><label>Ort</label><input id="advPlace" placeholder="Schulungszentrum"></div>
+          <div class="field wide"><label>Leitung</label><input id="advLeader" placeholder="Name der Leitung"></div>
+          <div class="field wide"><label>Beschreibung</label><textarea id="advDesc" placeholder="Kurze Beschreibung der Fortbildung…"></textarea></div>
+        </div>
+        <div class="actions"><button class="btn primary" onclick="publishAnnouncement('Fortbildung')">🚀 Fortbildung veröffentlichen</button></div>
+      </div>
+    </section>
+
+    <section id="announcements" class="view">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>📢 Allgemeine Ankündigung</h2>
+            <p>Schreibe eine offizielle Nachricht als Bot direkt in einen Discord-Kanal.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field wide">
+            <label>📍 Zielkanal</label>
+            <select id="announcementChannel"></select>
+          </div>
+
+          <div class="field wide">
+            <label>📢 Titel</label>
+            <input id="announcementTitle" placeholder="z. B. Wichtige Information">
+          </div>
+
+          <div class="field wide">
+            <label>📝 Nachricht</label>
+            <textarea id="announcementText" placeholder="Schreibe hier deine Ankündigung…"></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" onclick="sendGeneralAnnouncement()">🚀 Ankündigung veröffentlichen</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="messages" class="view">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>📨 Custom DM senden</h2>
+            <p>Sendet eine private Nachricht als Karrierecenter Bot an einen Discord-Nutzer.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field wide">
+            <label>👤 Discord User-ID</label>
+            <input id="dmUserId" inputmode="numeric" placeholder="z. B. 123456789012345678">
+          </div>
+
+          <div class="field wide">
+            <label>📨 Titel</label>
+            <input id="dmTitle" placeholder="z. B. Nachricht vom Karrierecenter">
+          </div>
+
+          <div class="field wide">
+            <label>💬 Nachricht</label>
+            <textarea id="dmText" placeholder="Schreibe hier die Nachricht an den Nutzer…"></textarea>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" onclick="sendCustomDm()">📨 DM senden</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="settings" class="view">
+      <div class="panel">
+        <div class="panel-head"><div><h2>⚙️ Discord-Konfiguration</h2><p>Kanäle, Kategorie und Recruiting-Rolle werden direkt im Bot gespeichert.</p></div></div>
+        <div class="form-grid">
+          <div class="field"><label>💼 Bewerbungs-Panel-Kanal</label><select id="panelChannel"></select></div>
+          <div class="field"><label>📂 Bewerbungs-Kategorie</label><select id="applicationCategory"></select></div>
+          <div class="field"><label>👥 Recruiting-Rolle</label><select id="staffRole"></select></div>
+          <div class="field"><label>🎓 Ausbildungs-Kanal</label><select id="trainingChannel"></select></div>
+          <div class="field"><label>📈 Fortbildungs-Kanal</label><select id="advancedChannel"></select></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><div><h2>❓ Bewerbungsfragen</h2><p>Für die Bewerbungsart „Fragen beantworten“.</p></div></div>
+        <div class="form-grid">
+          <div class="field wide"><label>Frage 1</label><input id="q1"></div>
+          <div class="field wide"><label>Frage 2</label><input id="q2"></div>
+          <div class="field wide"><label>Frage 3</label><input id="q3"></div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" onclick="saveConfig()">💾 Einstellungen speichern</button>
+          <button class="btn" onclick="publishPanel()">💼 Panel veröffentlichen</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="connectionCover" class="connection-cover">
+  <div class="connection-card">
+    <h2>🔐 Bot-Verbindung</h2>
+    <p>Verbinde das GitHub-Dashboard mit deiner geschützten Karrierecenter-API.</p>
+
+    <div class="field">
+      <label>🌐 Cloudflare API-Adresse</label>
+      <input id="connectionApi" placeholder="https://dein-tunnel.trycloudflare.com">
+    </div>
+
+    <div class="field">
+      <label>🔑 Web-Zugangsschlüssel</label>
+      <input id="connectionKey" type="password" autocomplete="off" placeholder="Zugangsschlüssel vom Mac">
+    </div>
+
+    <div class="connection-actions">
+      <button class="btn" onclick="clearConnection()">Zurücksetzen</button>
+      <button class="btn primary" onclick="saveConnection()">Verbinden</button>
+    </div>
+
+    <div class="connection-note">
+      Der Schlüssel wird nicht auf GitHub gespeichert. Er bleibt nur lokal in diesem Browser.
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+<script>
+let data = null;
+
+document.querySelectorAll(".nav button").forEach(btn=>{
+  btn.addEventListener("click",()=>showView(btn.dataset.view));
+});
+
+function showView(id){
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id===id));
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===id));
+}
+
+function toast(msg,error=false){
+  const el=document.getElementById("toast");
+  el.textContent=msg;
+  el.className="toast show"+(error?" error":"");
+  clearTimeout(window.__toast);
+  window.__toast=setTimeout(()=>el.className="toast",2800);
+}
+
+function getConnection(){
+  try{
+    return JSON.parse(localStorage.getItem("karriereConnection")||"null");
+  }catch{
+    return null;
+  }
+}
+
+function normalizeApiUrl(value){
+  return String(value||"").trim().replace(/\/+$/,"");
+}
+
+function openConnection(force=false){
+  const current=getConnection();
+  document.getElementById("connectionApi").value=current?.api||"";
+  document.getElementById("connectionKey").value=current?.key||"";
+  const cover=document.getElementById("connectionCover");
+  cover.classList.add("show");
+  if(force){
+    document.getElementById("connectionApi").focus();
+  }
+}
+
+function closeConnection(){
+  document.getElementById("connectionCover").classList.remove("show");
+}
+
+async function saveConnection(){
+  const apiUrl=normalizeApiUrl(document.getElementById("connectionApi").value);
+  const key=document.getElementById("connectionKey").value.trim();
+
+  if(!/^https:\/\/.+/i.test(apiUrl)){
+    toast("Bitte eine gültige https:// Cloudflare-Adresse eingeben.",true);
+    return;
+  }
+  if(key.length<20){
+    toast("Der Zugangsschlüssel ist ungültig.",true);
+    return;
+  }
+
+  localStorage.setItem("karriereConnection",JSON.stringify({api:apiUrl,key}));
+  closeConnection();
+  await refreshAll();
+}
+
+function clearConnection(){
+  localStorage.removeItem("karriereConnection");
+  document.getElementById("connectionApi").value="";
+  document.getElementById("connectionKey").value="";
+  toast("Verbindung wurde zurückgesetzt.");
+}
+
+async function api(path,options={}){
+  const connection=getConnection();
+  if(!connection?.api || !connection?.key){
+    openConnection(true);
+    throw new Error("Bitte zuerst die Bot-Verbindung einrichten.");
+  }
+
+  const headers={
+    "Content-Type":"application/json",
+    "Authorization":`Bearer ${connection.key}`,
+    ...(options.headers||{})
+  };
+
+  let res;
+  try{
+    res=await fetch(connection.api+path,{...options,headers});
+  }catch{
+    throw new Error("Die Bot-API ist nicht erreichbar. Prüfe den Cloudflare-Tunnel.");
+  }
+
+  let body={};
+  try{body=await res.json()}catch{}
+
+  if(res.status===401){
+    openConnection(true);
+    throw new Error("Zugangsschlüssel falsch oder nicht mehr gültig.");
+  }
+
+  if(!res.ok || body.ok===false) throw new Error(body.error||`HTTP ${res.status}`);
+  return body;
+}
+
+function setLoading(on){document.body.classList.toggle("loading",on)}
+
+function toggleSwitch(el){el.classList.toggle("on")}
+
+function fillSelect(id,items,value){
+  const el=document.getElementById(id);
+  el.innerHTML='<option value="">Nicht eingerichtet</option>'+items.map(x=>`<option value="${x.id}">${escapeHtml(x.name)}</option>`).join("");
+  if(value) el.value=String(value);
+}
+
+function escapeHtml(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+function statusTag(status,label){
+  const cls=status==="OFFEN"?"open":status==="ANGENOMMEN"?"accepted":status==="ABGELEHNT"?"rejected":"";
+  return `<span class="tag ${cls}">${escapeHtml(label)}</span>`;
+}
+
+function renderApplications(targetId,limit=25){
+  const target=document.getElementById(targetId);
+  const rows=(data.applications||[]).slice(0,limit);
+  if(!rows.length){target.innerHTML='<p style="color:var(--muted)">Noch keine Bewerbungen vorhanden.</p>';return}
+  target.innerHTML=`<div class="table-wrap"><table class="table">
+  <thead><tr><th>#</th><th>Bewerber</th><th>Art</th><th>Status</th><th>Kanal</th><th>Aktion</th></tr></thead>
+  <tbody>${rows.map(a=>`<tr>
+    <td>#${String(a.id).padStart(4,"0")}</td>
+    <td>${escapeHtml(a.user_name)}</td>
+    <td>${escapeHtml(a.application_type_label)}</td>
+    <td>${statusTag(a.status,a.status_label)}</td>
+    <td>${a.channel_name?`#${escapeHtml(a.channel_name)}`:"–"}</td>
+    <td>${a.status==="OFFEN"?`
+      <button class="btn good" onclick="decision(${a.id},'accept')">✅</button>
+      <button class="btn bad" onclick="decision(${a.id},'reject')">❌</button>`:"–"}</td>
+  </tr>`).join("")}</tbody></table></div>`;
+}
+
+function applyData(){
+  document.getElementById("guildName").textContent=data.guild.name;
+  document.getElementById("serverPill").textContent=`🛡️ ${data.guild.name} • ${data.guild.member_count??"?"} Mitglieder`;
+  document.getElementById("botStatus").textContent=data.bot.online?"Bot online":"Bot offline";
+  document.getElementById("statTotal").textContent=data.stats.total;
+  document.getElementById("statOpen").textContent=data.stats.open;
+  document.getElementById("statAccepted").textContent=data.stats.accepted;
+  document.getElementById("statRejected").textContent=data.stats.rejected;
+
+  document.getElementById("swInterview").classList.toggle("on",data.config.interview_enabled);
+  document.getElementById("swWritten").classList.toggle("on",data.config.written_enabled);
+  document.getElementById("swQuestions").classList.toggle("on",data.config.questions_enabled);
+
+  fillSelect("panelChannel",data.channels,data.config.panel_channel_id);
+  fillSelect("applicationCategory",data.categories,data.config.application_category_id);
+  fillSelect("staffRole",data.roles,data.config.staff_role_id);
+  fillSelect("trainingChannel",data.channels,data.config.training_channel_id);
+  fillSelect("advancedChannel",data.channels,data.config.advanced_training_channel_id);
+  fillSelect("announcementChannel",data.channels,null);
+
+  document.getElementById("q1").value=data.config.question_1||"";
+  document.getElementById("q2").value=data.config.question_2||"";
+  document.getElementById("q3").value=data.config.question_3||"";
+
+  renderApplications("applicationsTable",25);
+  renderApplications("overviewApps",8);
+}
+
+async function refreshAll(){
+  try{
+    setLoading(true);
+    data=await api("/api/bootstrap");
+    applyData();
+  }catch(e){toast(e.message,true)}
+  finally{setLoading(false)}
+}
+
+function configPayload(){
+  return {
+    panel_channel_id:document.getElementById("panelChannel").value||null,
+    application_category_id:document.getElementById("applicationCategory").value||null,
+    staff_role_id:document.getElementById("staffRole").value||null,
+    training_channel_id:document.getElementById("trainingChannel").value||null,
+    advanced_training_channel_id:document.getElementById("advancedChannel").value||null,
+    interview_enabled:document.getElementById("swInterview").classList.contains("on"),
+    written_enabled:document.getElementById("swWritten").classList.contains("on"),
+    questions_enabled:document.getElementById("swQuestions").classList.contains("on"),
+    question_1:document.getElementById("q1").value,
+    question_2:document.getElementById("q2").value,
+    question_3:document.getElementById("q3").value
+  };
+}
+
+async function saveConfig(){
+  try{
+    setLoading(true);
+    await api("/api/config",{method:"POST",body:JSON.stringify(configPayload())});
+    toast("✅ Einstellungen im Bot gespeichert.");
+    await refreshAll();
+  }catch(e){toast(e.message,true)}
+  finally{setLoading(false)}
+}
+
+async function publishPanel(){
+  try{
+    setLoading(true);
+    await api("/api/panel/publish",{method:"POST",body:"{}"});
+    toast("✅ Bewerbungs-Panel wurde in Discord veröffentlicht.");
+  }catch(e){toast(e.message,true)}
+  finally{setLoading(false)}
+}
+
+async function publishAnnouncement(kind){
+  const p=kind==="Ausbildung"?"train":"adv";
+  const payload={
+    kind,
+    title:document.getElementById(p+"Title").value,
+    date:document.getElementById(p+"Date").value,
+    time:document.getElementById(p+"Time").value,
+    place:document.getElementById(p+"Place").value,
+    leader:document.getElementById(p+"Leader").value,
+    description:document.getElementById(p+"Desc").value
+  };
+  try{
+    setLoading(true);
+    await api("/api/announcement",{method:"POST",body:JSON.stringify(payload)});
+    toast(`✅ ${kind} wurde direkt in Discord veröffentlicht.`);
+  }catch(e){toast(e.message,true)}
+  finally{setLoading(false)}
+}
+
+async function decision(id,decisionValue){
+  const word=decisionValue==="accept"?"annehmen":"ablehnen";
+  if(!confirm(`Bewerbung #${String(id).padStart(4,"0")} wirklich ${word}? Diese Entscheidung kann nicht rückgängig gemacht werden.`))return;
+  try{
+    setLoading(true);
+    const result=await api(`/api/applications/${id}/decision`,{method:"POST",body:JSON.stringify({decision:decisionValue})});
+    toast(result.dm_sent?"✅ Entscheidung gespeichert und DM gesendet.":"⚠️ Entscheidung gespeichert, DM konnte nicht zugestellt werden.",!result.dm_sent);
+    await refreshAll();
+  }catch(e){toast(e.message,true)}
+  finally{setLoading(false)}
+}
+
+
+async function sendGeneralAnnouncement(){
+  const payload={
+    channel_id:document.getElementById("announcementChannel").value,
+    title:document.getElementById("announcementTitle").value,
+    description:document.getElementById("announcementText").value
+  };
+
+  if(!payload.channel_id){
+    toast("Bitte einen Zielkanal auswählen.",true);
+    return;
+  }
+
+  try{
+    setLoading(true);
+    await api("/api/general-announcement",{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+    toast("✅ Ankündigung wurde in Discord veröffentlicht.");
+    document.getElementById("announcementTitle").value="";
+    document.getElementById("announcementText").value="";
+  }catch(e){
+    toast(e.message,true);
+  }finally{
+    setLoading(false);
+  }
+}
+
+async function sendCustomDm(){
+  const payload={
+    user_id:document.getElementById("dmUserId").value.trim(),
+    title:document.getElementById("dmTitle").value,
+    message:document.getElementById("dmText").value
+  };
+
+  if(!payload.user_id){
+    toast("Bitte eine Discord User-ID eingeben.",true);
+    return;
+  }
+
+  if(!confirm(`DM wirklich an User-ID ${payload.user_id} senden?`)){
+    return;
+  }
+
+  try{
+    setLoading(true);
+
+    const result=await api("/api/custom-dm",{
+      method:"POST",
+      body:JSON.stringify(payload)
+    });
+
+    toast(`✅ DM wurde an ${result.user_name} gesendet.`);
+    document.getElementById("dmTitle").value="";
+    document.getElementById("dmText").value="";
+  }catch(e){
+    toast(e.message,true);
+  }finally{
+    setLoading(false);
+  }
+}
+
+if(getConnection()){
+  refreshAll();
+}else{
+  openConnection(true);
+}
+</script>
+</body>
+</html>
